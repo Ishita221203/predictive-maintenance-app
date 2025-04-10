@@ -1,0 +1,1182 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Predictive Maintenance AI</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #4361ee;
+      --secondary-color: #3a0ca3;
+      --accent-color: #f72585;
+      --light-color: #f8f9fa;
+      --dark-color: #212529;
+      --success-color: #4cc9f0;
+      --warning-color: #f8961e;
+      --danger-color: #ef233c;
+      --card-bg: rgba(255, 255, 255, 0.95);
+      --glass-effect: rgba(255, 255, 255, 0.15);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', 'Roboto', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      color: var(--dark-color);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    header {
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+      color: white;
+      padding: 30px 0;
+      text-align: center;
+      border-radius: 0 0 20px 20px;
+      margin-bottom: 30px;
+      box-shadow: 0 10px 30px rgba(67, 97, 238, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    header::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 70%);
+      transform: rotate(30deg);
+    }
+
+    header h1 {
+      font-size: 2.8rem;
+      margin-bottom: 10px;
+      font-weight: 700;
+      position: relative;
+      text-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    header p {
+      font-size: 1.2rem;
+      opacity: 0.9;
+      max-width: 700px;
+      margin: 0 auto;
+      position: relative;
+      font-weight: 300;
+    }
+
+    .main-content {
+      display: grid;
+      grid-template-columns: 1fr 1.5fr;
+      /* Wider graph section */
+      gap: 30px;
+      margin-bottom: 30px;
+    }
+
+    @media (max-width: 1024px) {
+      .main-content {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .input-section,
+    .results-section {
+      background: var(--card-bg);
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .input-section:hover,
+    .results-section:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+    }
+
+    h2 {
+      color: var(--primary-color);
+      margin-bottom: 25px;
+      font-size: 1.8rem;
+      font-weight: 600;
+      position: relative;
+      display: inline-block;
+    }
+
+    h2::after {
+      content: "";
+      position: absolute;
+      bottom: -8px;
+      left: 0;
+      width: 50px;
+      height: 4px;
+      background: var(--accent-color);
+      border-radius: 2px;
+    }
+
+    .form-group {
+      margin-bottom: 25px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 10px;
+      font-weight: 500;
+      color: var(--dark-color);
+      font-size: 0.95rem;
+    }
+
+    input,
+    select {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+      font-size: 1rem;
+      transition: all 0.3s;
+      background: rgba(255, 255, 255, 0.8);
+      box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05);
+    }
+
+    input:focus,
+    select:focus {
+      border-color: var(--primary-color);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+      background: white;
+    }
+
+    button {
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+      color: white;
+      border: none;
+      padding: 16px 24px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 600;
+      transition: all 0.3s;
+      width: 100%;
+      box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(67, 97, 238, 0.4);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    button::after {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0) 70%);
+      transform: rotate(30deg);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    button:hover::after {
+      opacity: 1;
+    }
+
+    .result-card {
+      background: var(--card-bg);
+      padding: 25px;
+      border-radius: 15px;
+      margin-bottom: 25px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+      border-left: 4px solid var(--primary-color);
+      transition: transform 0.3s;
+    }
+
+    .result-card:hover {
+      transform: translateY(-3px);
+    }
+
+    .result-card h3 {
+      color: var(--primary-color);
+      margin-bottom: 15px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+    }
+
+    .result-card h3 i {
+      margin-right: 10px;
+      font-size: 1.2rem;
+    }
+
+    .prediction {
+      font-size: 1.6rem;
+      font-weight: bold;
+      text-align: center;
+      padding: 25px;
+      margin: 25px 0;
+      border-radius: 15px;
+      background: linear-gradient(135deg, rgba(76, 201, 240, 0.1) 0%, rgba(76, 201, 240, 0.2) 100%);
+      border: 2px solid var(--success-color);
+      color: var(--success-color);
+      box-shadow: 0 5px 15px rgba(76, 201, 240, 0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .prediction::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0) 70%);
+      transform: rotate(30deg);
+      opacity: 0.3;
+    }
+
+    .warning {
+      background: linear-gradient(135deg, rgba(248, 150, 30, 0.1) 0%, rgba(248, 150, 30, 0.2) 100%);
+      border: 2px solid var(--warning-color);
+      color: var(--warning-color);
+      box-shadow: 0 5px 15px rgba(248, 150, 30, 0.1);
+    }
+
+    .danger {
+      background: linear-gradient(135deg, rgba(239, 35, 60, 0.1) 0%, rgba(239, 35, 60, 0.2) 100%);
+      border: 2px solid var(--danger-color);
+      color: var(--danger-color);
+      box-shadow: 0 5px 15px rgba(239, 35, 60, 0.1);
+    }
+
+    /* Larger chart section */
+    .chart-container {
+      height: 450px;
+      /* Increased height */
+      margin-top: 25px;
+      position: relative;
+      background: var(--card-bg);
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    }
+
+    .equipment-image {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 15px;
+      margin-bottom: 25px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s;
+    }
+
+    .equipment-image:hover {
+      transform: scale(1.02);
+    }
+
+    footer {
+      text-align: center;
+      padding: 25px;
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+      color: white;
+      border-radius: 20px 20px 0 0;
+      margin-top: 30px;
+      box-shadow: 0 -10px 30px rgba(67, 97, 238, 0.2);
+    }
+
+    /* Loading spinner */
+    .spinner {
+      display: none;
+      width: 50px;
+      height: 50px;
+      margin: 30px auto;
+      border: 4px solid rgba(67, 97, 238, 0.1);
+      border-radius: 50%;
+      border-top: 4px solid var(--primary-color);
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      margin-bottom: 25px;
+      background: rgba(255, 255, 255, 0.5);
+      border-radius: 10px;
+      padding: 5px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .tab {
+      padding: 12px 20px;
+      cursor: pointer;
+      background: transparent;
+      margin-right: 5px;
+      border-radius: 8px;
+      font-weight: 500;
+      transition: all 0.3s;
+      flex: 1;
+      text-align: center;
+    }
+
+    .tab.active {
+      background: white;
+      color: var(--primary-color);
+      box-shadow: 0 5px 15px rgba(67, 97, 238, 0.1);
+    }
+
+    .tab-content {
+      display: none;
+      animation: fadeIn 0.5s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    /* Model templates */
+    .model-templates {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .model-template {
+      background: white;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      border-radius: 12px;
+      padding: 15px;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-align: center;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.03);
+    }
+
+    .model-template:hover {
+      border-color: var(--primary-color);
+      box-shadow: 0 10px 25px rgba(67, 97, 238, 0.1);
+      transform: translateY(-3px);
+    }
+
+    .model-template.selected {
+      border-color: var(--primary-color);
+      background: rgba(67, 97, 238, 0.05);
+      box-shadow: 0 5px 15px rgba(67, 97, 238, 0.1);
+    }
+
+    .model-template img {
+      width: 40px;
+      height: 40px;
+      margin-bottom: 10px;
+      filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.1));
+    }
+
+    .model-template h4 {
+      margin: 10px 0 5px;
+      color: var(--dark-color);
+      font-size: 0.9rem;
+    }
+
+    .model-template p {
+      font-size: 0.75rem;
+      color: #666;
+    }
+
+    /* API library */
+    .api-library {
+      margin-top: 20px;
+    }
+
+    .api-item {
+      background: white;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      border-radius: 12px;
+      padding: 15px;
+      margin-bottom: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.03);
+      transition: all 0.3s;
+    }
+
+    .api-item:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    }
+
+    .api-item h4 {
+      margin: 0;
+      color: var(--dark-color);
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+    }
+
+    .api-item h4 i {
+      margin-right: 10px;
+      color: var(--primary-color);
+    }
+
+    .api-item p {
+      margin: 5px 0 0;
+      font-size: 0.8rem;
+      color: #666;
+    }
+
+    .api-item button {
+      width: auto;
+      padding: 10px 20px;
+      font-size: 0.85rem;
+      border-radius: 8px;
+    }
+
+    /* Status indicators */
+    .status-indicator {
+      display: inline-flex;
+      align-items: center;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-left: 10px;
+    }
+
+    .status-normal {
+      background: rgba(76, 201, 240, 0.1);
+      color: var(--success-color);
+    }
+
+    .status-warning {
+      background: rgba(248, 150, 30, 0.1);
+      color: var(--warning-color);
+    }
+
+    .status-danger {
+      background: rgba(239, 35, 60, 0.1);
+      color: var(--danger-color);
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="container">
+      <h1>Predictive Maintenance AI</h1>
+      <p>Leverage artificial intelligence to predict equipment failures before they happen</p>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="main-content">
+      <section class="input-section">
+        <h2>Equipment Parameters</h2>
+        <img
+          src="https://images.unsplash.com/photo-1518770660439-4636190af475?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60"
+          alt="Industrial Equipment" class="equipment-image">
+
+        <div class="tabs">
+          <div class="tab active" onclick="openTab(event, 'manual-input')">Manual Input</div>
+          <div class="tab" onclick="openTab(event, 'file-upload')">File Upload</div>
+          <div class="tab" onclick="openTab(event, 'system-integration')">System Integration</div>
+        </div>
+
+        <div id="manual-input" class="tab-content active">
+          <div class="form-group">
+            <label for="equipment-type">Equipment Type</label>
+            <select id="equipment-type">
+              <option value="motor">Electric Motor</option>
+              <option value="pump">Centrifugal Pump</option>
+              <option value="compressor">Air Compressor</option>
+              <option value="turbine">Steam Turbine</option>
+              <option value="bearing">Rolling Element Bearing</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="temperature">Temperature (°C)</label>
+            <input type="number" id="temperature" placeholder="Enter temperature reading">
+          </div>
+
+          <div class="form-group">
+            <label for="vibration">Vibration (mm/s)</label>
+            <input type="number" id="vibration" placeholder="Enter vibration reading">
+          </div>
+
+          <div class="form-group">
+            <label for="pressure">Pressure (psi)</label>
+            <input type="number" id="pressure" placeholder="Enter pressure reading">
+          </div>
+
+          <div class="form-group">
+            <label for="current">Current (A)</label>
+            <input type="number" id="current" placeholder="Enter current reading">
+          </div>
+
+          <div class="form-group">
+            <label for="voltage">Voltage (V)</label>
+            <input type="number" id="voltage" placeholder="Enter voltage reading">
+          </div>
+
+          <div class="form-group">
+            <label>Select Predictive Model Template</label>
+            <div class="model-templates">
+              <div class="model-template" onclick="selectModel(this, 'vibration')">
+                <img src="https://img.icons8.com/ios-filled/50/4361ee/vibration-mode.png" alt="Vibration">
+                <h4>Vibration Analysis</h4>
+                <p>Detect bearing and gear faults</p>
+              </div>
+              <div class="model-template" onclick="selectModel(this, 'thermal')">
+                <img src="https://img.icons8.com/ios-filled/50/4361ee/thermometer.png" alt="Thermal">
+                <h4>Thermal Analysis</h4>
+                <p>Monitor heat patterns</p>
+              </div>
+              <div class="model-template selected" onclick="selectModel(this, 'combined')">
+                <img src="https://img.icons8.com/ios-filled/50/4361ee/combo-chart.png" alt="Combined">
+                <h4>Combined Analysis</h4>
+                <p>Multi-parameter model</p>
+              </div>
+            </div>
+          </div>
+
+          <button onclick="predictMaintenance()">
+            <i class="fas fa-cogs"></i> Predict Maintenance Needs
+          </button>
+        </div>
+
+        <div id="file-upload" class="tab-content">
+          <div class="form-group">
+            <label for="csv-file">Upload Sensor Data (CSV)</label>
+            <input type="file" id="csv-file" accept=".csv">
+          </div>
+
+          <div class="form-group">
+            <label for="equipment-type-file">Equipment Type</label>
+            <select id="equipment-type-file">
+              <option value="motor">Electric Motor</option>
+              <option value="pump">Centrifugal Pump</option>
+              <option value="compressor">Air Compressor</option>
+              <option value="turbine">Steam Turbine</option>
+              <option value="bearing">Rolling Element Bearing</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Select Predictive Model Template</label>
+            <div class="model-templates">
+              <div class="model-template" onclick="selectModel(this, 'timeseries')">
+                <img src="https://img.icons8.com/ios-filled/50/4361ee/line-chart.png" alt="Time Series">
+                <h4>Time Series</h4>
+                <p>Trend analysis</p>
+              </div>
+              <div class="model-template" onclick="selectModel(this, 'anomaly')">
+                <img src="https://img.icons8.com/ios-filled/50/4361ee/error.png" alt="Anomaly">
+                <h4>Anomaly Detection</h4>
+                <p>Spot deviations</p>
+              </div>
+              <div class="model-template selected" onclick="selectModel(this, 'combined')">
+                <img src="https://img.icons8.com/ios-filled/50/4361ee/combo-chart.png" alt="Combined">
+                <h4>Combined Analysis</h4>
+                <p>Multi-parameter model</p>
+              </div>
+            </div>
+          </div>
+
+          <button onclick="predictFromFile()">
+            <i class="fas fa-file-upload"></i> Analyze Data
+          </button>
+        </div>
+
+        <div id="system-integration" class="tab-content">
+          <div class="form-group">
+            <label>Data Source Integration</label>
+            <div class="api-library">
+              <div class="api-item">
+                <div>
+                  <h4><i class="fas fa-sensor"></i> IoT Sensor API</h4>
+                  <p>Connect to IoT sensor networks for real-time data</p>
+                </div>
+                <button onclick="connectAPI('iot')">Connect</button>
+              </div>
+              <div class="api-item">
+                <div>
+                  <h4><i class="fas fa-cogs"></i> EAM System API</h4>
+                  <p>Integrate with Enterprise Asset Management systems</p>
+                </div>
+                <button onclick="connectAPI('eam')">Connect</button>
+              </div>
+              <div class="api-item">
+                <div>
+                  <h4><i class="fas fa-industry"></i> Operations Data API</h4>
+                  <p>Pull operational data from production systems</p>
+                </div>
+                <button onclick="connectAPI('operations')">Connect</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Select Predictive Model Template</label>
+            <div class="model-templates">
+              <div class="model-template" onclick="selectModel(this, 'eam')">
+                <img src="https://img.icons8.com/ios-filled/50/4361ee/maintenance.png" alt="EAM">
+                <h4>EAM Integration</h4>
+                <p>Work order history</p>
+              </div>
+              <div class="model-template" onclick="selectModel(this, 'reliability')">
+                <img src="https://img.icons8.com/ios-filled/50/4361ee/statistics.png" alt="Reliability">
+                <h4>Reliability Model</h4>
+                <p>MTBF calculations</p>
+              </div>
+              <div class="model-template selected" onclick="selectModel(this, 'combined')">
+                <img src="https://img.icons8.com/ios-filled/50/4361ee/combo-chart.png" alt="Combined">
+                <h4>Full Integration</h4>
+                <p>All data sources</p>
+              </div>
+            </div>
+          </div>
+
+          <button onclick="predictFromSystem()">
+            <i class="fas fa-project-diagram"></i> Run Integrated Analysis
+          </button>
+        </div>
+
+        <div class="spinner" id="loading-spinner"></div>
+      </section>
+
+      <section class="results-section">
+        <h2>Maintenance Prediction</h2>
+
+        <div id="prediction-result">
+          <p>Enter equipment parameters and click "Predict Maintenance Needs" to get a prediction.</p>
+        </div>
+
+        <div class="result-card">
+          <h3><i class="fas fa-heartbeat"></i> Equipment Health Status</h3>
+          <div id="health-status">
+            <p>No data analyzed yet.</p>
+          </div>
+        </div>
+
+        <div class="result-card">
+          <h3><i class="fas fa-tools"></i> Recommended Actions</h3>
+          <div id="recommended-actions">
+            <p>Predictive analysis will suggest maintenance actions here.</p>
+          </div>
+        </div>
+
+        <div class="chart-container">
+          <canvas id="health-chart"></canvas>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <footer>
+    <div class="container">
+      <p>© 2025 Predictive Maintenance AI | Parigh Technologies</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+  <script>
+    // Global variables
+    let selectedModel = 'combined';
+    let healthChart;
+    const ctx = document.getElementById('health-chart').getContext('2d');
+
+    // Tab functionality
+    function openTab(evt, tabName) {
+      const tabContents = document.getElementsByClassName("tab-content");
+      for (let i = 0; i < tabContents.length; i++) {
+        tabContents[i].classList.remove("active");
+      }
+
+      const tabs = document.getElementsByClassName("tab");
+      for (let i = 0; i < tabs.length; i++) {
+        tabs[i].classList.remove("active");
+      }
+
+      document.getElementById(tabName).classList.add("active");
+      evt.currentTarget.classList.add("active");
+    }
+
+    // Model template selection
+    function selectModel(element, modelType) {
+      // Remove selected class from all models
+      const allModels = document.querySelectorAll('.model-template');
+      allModels.forEach(model => model.classList.remove('selected'));
+
+      // Add selected class to clicked model
+      element.classList.add('selected');
+      selectedModel = modelType;
+
+      console.log(`Selected model: ${modelType}`);
+    }
+
+    // API connection simulation
+    function connectAPI(apiType) {
+      alert(`Connecting to ${apiType.toUpperCase()} API... This would initiate OAuth flow in a real application.`);
+    }
+
+    // Chart initialization
+    function initializeChart() {
+      healthChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+          datasets: [{
+            label: 'Vibration (mm/s)',
+            data: [2.1, 2.3, 2.5, 2.8, 3.1, 3.5],
+            borderColor: '#f72585',
+            backgroundColor: 'rgba(247, 37, 133, 0.1)',
+            borderWidth: 3,
+            tension: 0.4,
+            yAxisID: 'y',
+            fill: true,
+            pointBackgroundColor: '#fff',
+            pointBorderColor: '#f72585',
+            pointRadius: 5,
+            pointHoverRadius: 7,
+            pointBorderWidth: 2
+          }, {
+            label: 'Temperature (°C)',
+            data: [65, 67, 68, 70, 72, 75],
+            borderColor: '#4361ee',
+            backgroundColor: 'rgba(67, 97, 238, 0.1)',
+            borderWidth: 3,
+            tension: 0.4,
+            yAxisID: 'y1',
+            fill: true,
+            pointBackgroundColor: '#fff',
+            pointBorderColor: '#4361ee',
+            pointRadius: 5,
+            pointHoverRadius: 7,
+            pointBorderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: {
+            mode: 'index',
+            intersect: false,
+          },
+          plugins: {
+            legend: {
+              position: 'top',
+              labels: {
+                font: {
+                  size: 12,
+                  weight: 'bold'
+                },
+                padding: 20,
+                usePointStyle: true,
+                pointStyle: 'circle'
+              }
+            },
+            tooltip: {
+              backgroundColor: 'rgba(0,0,0,0.8)',
+              titleFont: {
+                size: 14,
+                weight: 'bold'
+              },
+              bodyFont: {
+                size: 12
+              },
+              padding: 12,
+              cornerRadius: 10,
+              displayColors: true,
+              borderColor: 'rgba(0,0,0,0.1)',
+              borderWidth: 1
+            }
+          },
+          scales: {
+            y: {
+              type: 'linear',
+              display: true,
+              position: 'left',
+              title: {
+                display: true,
+                text: 'Vibration (mm/s)',
+                font: {
+                  weight: 'bold'
+                }
+              },
+              grid: {
+                color: 'rgba(0,0,0,0.05)'
+              },
+              ticks: {
+                color: '#666'
+              }
+            },
+            y1: {
+              type: 'linear',
+              display: true,
+              position: 'right',
+              title: {
+                display: true,
+                text: 'Temperature (°C)',
+                font: {
+                  weight: 'bold'
+                }
+              },
+              grid: {
+                drawOnChartArea: false,
+                color: 'rgba(0,0,0,0.05)'
+              },
+              ticks: {
+                color: '#666'
+              }
+            },
+            x: {
+              grid: {
+                color: 'rgba(0,0,0,0.05)'
+              },
+              ticks: {
+                color: '#666'
+              }
+            }
+          },
+          animation: {
+            duration: 2000,
+            easing: 'easeOutQuart'
+          }
+        }
+      });
+    }
+
+    // Initialize chart when page loads
+    window.onload = initializeChart;
+
+    // Simulate prediction from manual input
+    function predictMaintenance() {
+      const spinner = document.getElementById('loading-spinner');
+      spinner.style.display = 'block';
+
+      // Get input values
+      const equipmentType = document.getElementById('equipment-type').value;
+      const temperature = parseFloat(document.getElementById('temperature').value) || 0;
+      const vibration = parseFloat(document.getElementById('vibration').value) || 0;
+      const pressure = parseFloat(document.getElementById('pressure').value) || 0;
+      const current = parseFloat(document.getElementById('current').value) || 0;
+      const voltage = parseFloat(document.getElementById('voltage').value) || 0;
+
+      // Simulate API call delay
+      setTimeout(() => {
+        spinner.style.display = 'none';
+
+        // Generate "prediction" based on inputs and selected model
+        let failureProbability = calculateFailureProbability(equipmentType, temperature, vibration, pressure, current, voltage, selectedModel);
+        let status = "Normal";
+        let statusClass = "status-normal";
+        let recommendation = "No immediate action required. Continue regular monitoring.";
+        let modelUsed = "Combined Parameter Model";
+        let predictionClass = "prediction";
+
+        // Determine status and recommendation based on probability
+        if (failureProbability > 80) {
+          status = "Critical";
+          statusClass = "status-danger";
+          recommendation = "Immediate maintenance required. High probability of failure within 7 days. Check bearings and lubrication.";
+          predictionClass = "prediction danger";
+        } else if (failureProbability > 60) {
+          status = "Warning";
+          statusClass = "status-warning";
+          recommendation = "Schedule maintenance within 2 weeks. Monitor closely for any parameter increases.";
+          predictionClass = "prediction warning";
+        } else if (failureProbability > 30) {
+          status = "Attention";
+          statusClass = "status-warning";
+          recommendation = "Plan maintenance within 4 weeks. Check for early signs of wear.";
+          predictionClass = "prediction warning";
+        }
+
+        // Get model-specific details
+        switch (selectedModel) {
+          case 'vibration':
+            modelUsed = "Vibration Analysis Model";
+            recommendation += " (Vibration pattern detected)";
+            break;
+          case 'thermal':
+            modelUsed = "Thermal Analysis Model";
+            recommendation += " (Thermal pattern detected)";
+            break;
+          case 'timeseries':
+            modelUsed = "Time Series Analysis Model";
+            recommendation += " (Trend analysis applied)";
+            break;
+          case 'anomaly':
+            modelUsed = "Anomaly Detection Model";
+            recommendation += " (Statistical anomaly detected)";
+            break;
+        }
+
+        // Update UI
+        updateUI(failureProbability, status, statusClass, recommendation, modelUsed, {
+          temperature, vibration, pressure, current, voltage
+        }, predictionClass);
+
+      }, 1500);
+    }
+
+    // Calculate failure probability based on parameters and model
+    function calculateFailureProbability(equipmentType, temperature, vibration, pressure, current, voltage, modelType) {
+      let baseProbability = 0;
+
+      // Base calculations based on parameters
+      if (vibration > 4 || temperature > 80) {
+        baseProbability = 85 + Math.random() * 15;
+      } else if (vibration > 3 || temperature > 75) {
+        baseProbability = 60 + Math.random() * 20;
+      } else if (vibration > 2.5 || temperature > 70) {
+        baseProbability = 30 + Math.random() * 20;
+      } else {
+        baseProbability = 5 + Math.random() * 15;
+      }
+
+      // Model-specific adjustments
+      switch (modelType) {
+        case 'vibration':
+          baseProbability = vibration * 15 + Math.random() * 10;
+          break;
+        case 'thermal':
+          baseProbability = (temperature - 60) * 2 + Math.random() * 10;
+          break;
+        case 'combined':
+          baseProbability = (vibration * 10 + (temperature - 60) * 1.5) / 1.5 + Math.random() * 10;
+          break;
+      }
+
+      // Cap at 100%
+      return Math.min(100, baseProbability.toFixed(1));
+    }
+
+    // Update the UI with prediction results
+    function updateUI(failureProbability, status, statusClass, recommendation, modelUsed, parameters, predictionClass) {
+      const predictionDiv = document.getElementById('prediction-result');
+      const healthDiv = document.getElementById('health-status');
+      const actionsDiv = document.getElementById('recommended-actions');
+
+      predictionDiv.innerHTML = `
+                <div class="${predictionClass}">
+                    Failure Probability: ${failureProbability}%<br>
+                    Status: ${status} <span class="status-indicator ${statusClass}">${status}</span><br>
+                    <small>Model: ${modelUsed}</small>
+                </div>
+            `;
+
+      healthDiv.innerHTML = `
+                <p><strong>Current Status:</strong> ${status} <span class="status-indicator ${statusClass}">${status}</span></p>
+                <p><strong>Model Used:</strong> ${modelUsed}</p>
+                <p><strong>Parameters:</strong></p>
+                <ul>
+                    <li>Temperature: ${parameters.temperature}°C</li>
+                    <li>Vibration: ${parameters.vibration} mm/s</li>
+                    ${parameters.pressure ? `<li>Pressure: ${parameters.pressure} psi</li>` : ''}
+                    ${parameters.current ? `<li>Current: ${parameters.current} A</li>` : ''}
+                    ${parameters.voltage ? `<li>Voltage: ${parameters.voltage} V</li>` : ''}
+                </ul>
+            `;
+
+      actionsDiv.innerHTML = `
+                <p><strong>Recommendation:</strong> ${recommendation}</p>
+                ${status !== "Normal" ? `<p><strong>Maintenance Priority:</strong> ${status === "Critical" ? "High" : status === "Warning" ? "Medium" : "Low"}</p>` : ''}
+            `;
+
+      // Update chart with new data
+      updateChart(parameters.vibration, parameters.temperature);
+    }
+
+    // Predict from file upload
+    function predictFromFile() {
+      const fileInput = document.getElementById('csv-file');
+      const spinner = document.getElementById('loading-spinner');
+
+      if (!fileInput.files.length) {
+        alert('Please select a CSV file first.');
+        return;
+      }
+
+      spinner.style.display = 'block';
+
+      // Simulate file processing
+      setTimeout(() => {
+        spinner.style.display = 'none';
+
+        // For demo purposes, we'll just use random data
+        const equipmentType = document.getElementById('equipment-type-file').value;
+        const temperature = 70 + Math.random() * 15;
+        const vibration = 2.5 + Math.random() * 2;
+        const pressure = 50 + Math.random() * 30;
+        const current = 10 + Math.random() * 5;
+        const voltage = 220 + Math.random() * 20;
+
+        // Generate prediction
+        let failureProbability = calculateFailureProbability(equipmentType, temperature, vibration, pressure, current, voltage, selectedModel);
+        let status = "Normal";
+        let statusClass = "status-normal";
+        let recommendation = "No immediate action required. Continue regular monitoring.";
+        let modelUsed = "Time Series Model";
+        let predictionClass = "prediction";
+
+        if (failureProbability > 80) {
+          status = "Critical";
+          statusClass = "status-danger";
+          recommendation = "Immediate maintenance required. High probability of failure within 7 days. Check bearings and lubrication.";
+          predictionClass = "prediction danger";
+        } else if (failureProbability > 60) {
+          status = "Warning";
+          statusClass = "status-warning";
+          recommendation = "Schedule maintenance within 2 weeks. Monitor closely for any parameter increases.";
+          predictionClass = "prediction warning";
+        } else if (failureProbability > 30) {
+          status = "Attention";
+          statusClass = "status-warning";
+          recommendation = "Plan maintenance within 4 weeks. Check for early signs of wear.";
+          predictionClass = "prediction warning";
+        }
+
+        // Update input fields for display
+        document.getElementById('temperature').value = temperature.toFixed(1);
+        document.getElementById('vibration').value = vibration.toFixed(1);
+        document.getElementById('pressure').value = pressure.toFixed(1);
+        document.getElementById('current').value = current.toFixed(1);
+        document.getElementById('voltage').value = voltage.toFixed(1);
+
+        // Switch to manual tab to show results
+        document.querySelector('.tab').click();
+
+        // Update UI
+        updateUI(failureProbability, status, statusClass, recommendation, modelUsed, {
+          temperature, vibration, pressure, current, voltage
+        }, predictionClass);
+
+      }, 2000);
+    }
+
+    // Predict from system integration
+    function predictFromSystem() {
+      const spinner = document.getElementById('loading-spinner');
+      spinner.style.display = 'block';
+
+      // Simulate system integration processing
+      setTimeout(() => {
+        spinner.style.display = 'none';
+
+        // For demo purposes, we'll just use random data
+        const temperature = 75 + Math.random() * 20;
+        const vibration = 3.5 + Math.random() * 3;
+        const pressure = 60 + Math.random() * 40;
+
+        // Generate prediction
+        let failureProbability = calculateFailureProbability('bearing', temperature, vibration, pressure, null, null, selectedModel);
+        let status = "Normal";
+        let statusClass = "status-normal";
+        let recommendation = "No immediate action required. Continue regular monitoring.";
+        let modelUsed = "Integrated Reliability Model";
+        let predictionClass = "prediction";
+
+        if (failureProbability > 80) {
+          status = "Critical";
+          statusClass = "status-danger";
+          recommendation = "Immediate maintenance required. High probability of failure within 7 days. Check bearings and lubrication.";
+          predictionClass = "prediction danger";
+        } else if (failureProbability > 60) {
+          status = "Warning";
+          statusClass = "status-warning";
+          recommendation = "Schedule maintenance within 2 weeks. Monitor closely for any parameter increases.";
+          predictionClass = "prediction warning";
+        } else if (failureProbability > 30) {
+          status = "Attention";
+          statusClass = "status-warning";
+          recommendation = "Plan maintenance within 4 weeks. Check for early signs of wear.";
+          predictionClass = "prediction warning";
+        }
+
+        // Update UI
+        updateUI(failureProbability, status, statusClass, recommendation, modelUsed, {
+          temperature, vibration, pressure
+        }, predictionClass);
+
+      }, 2500);
+    }
+
+    function updateChart(vibration, temperature) {
+      // Generate some historical data for the chart
+      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'];
+      const vibData = [];
+      const tempData = [];
+
+      // Generate random but increasing trend
+      let baseVib = Math.max(1.5, vibration - 2);
+      let baseTemp = Math.max(55, temperature - 15);
+
+      for (let i = 0; i < months.length; i++) {
+        const vib = baseVib + (i * (vibration - baseVib) / (months.length - 1)) + (Math.random() * 0.5 - 0.25);
+        const temp = baseTemp + (i * (temperature - baseTemp) / (months.length - 1)) + (Math.random() * 2 - 1);
+
+        vibData.push(vib);
+        tempData.push(temp);
+      }
+
+      // Update chart with animation
+      healthChart.data.labels = months;
+      healthChart.data.datasets[0].data = vibData;
+      healthChart.data.datasets[1].data = tempData;
+
+      // Add animation effect
+      healthChart.options.animation.duration = 1000;
+      healthChart.update();
+    }
+  </script>
+</body>
+
+</html>
